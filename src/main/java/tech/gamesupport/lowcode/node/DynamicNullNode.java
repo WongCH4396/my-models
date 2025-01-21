@@ -37,9 +37,6 @@ public class DynamicNullNode implements DynamicNode {
 
     @Override
     public <T> T getValue(Class<T> type) {
-        if (type.isPrimitive()) {
-            throw new IllegalArgumentException("type must not be primitive");
-        }
         return null;
     }
 

@@ -1,6 +1,7 @@
 package tech.gamesupport.lowcode.node;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class NodePath {
@@ -27,25 +28,12 @@ public class NodePath {
         return current;
     }
 
-    public static NodePath fromString(String pathVal) {
-        List<Object> pathList = new ArrayList<>();
-        // Remove the surrounding brackets if present
-        if (pathVal.startsWith("[") && pathVal.endsWith("]")) {
-            pathVal = pathVal.substring(1, pathVal.length() - 1);
-        }
-        // Split by dot while considering array-like notations
-        String[] parts = pathVal.split("\\.");
-        for (String part : parts) {
-            // Check if the part is a number (array index)
-            try {
-                int index = Integer.parseInt(part.trim());
-                pathList.add(index);
-            } catch (NumberFormatException e) {
-                // Not a number, treat it as a string
-                pathList.add(part.trim());
-            }
-        }
-        return new NodePath(pathList);
+    public static NodePath fromTraces(Object... pathVal) {
+        return new NodePath(Arrays.asList(pathVal));
+    }
+
+    public static NodePath self() {
+        return new NodePath(Collections.emptyList());
     }
 
 

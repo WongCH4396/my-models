@@ -33,13 +33,15 @@ public class DynamicNodeBuilder {
                 throw new IllegalArgumentException("path is not allowed");
             }
         }
-        DynamicNodeBuilder subBuilder = new DynamicNodeBuilder();
-        subBuilder.putNode(targetPath.goDeep(), dynamicNode);
         if (type.equals("immutable")) {
             root = dynamicNode;
         } else if (type.equals("array")) {
+            DynamicNodeBuilder subBuilder = new DynamicNodeBuilder();
+            subBuilder.putNode(targetPath.goDeep(), dynamicNode);
             array.set(targetPath.getIndex(), subBuilder);
         } else {
+            DynamicNodeBuilder subBuilder = new DynamicNodeBuilder();
+            subBuilder.putNode(targetPath.goDeep(), dynamicNode);
             map.put(targetPath.getName(), subBuilder);
         }
 

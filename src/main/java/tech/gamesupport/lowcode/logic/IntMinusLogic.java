@@ -5,16 +5,18 @@ import tech.gamesupport.lowcode.node.DynamicValueNode;
 import tech.gamesupport.lowcode.typedef.TypeDef;
 import tech.gamesupport.lowcode.typedef.TypeDefConvertUtils;
 
-public class AddLogic implements ILogic {
+import java.math.BigInteger;
+
+public class IntMinusLogic implements ILogic {
 
     private final TypeDef parameterTypeDef = TypeDefConvertUtils.toTypeDef(AddParameter.class);
     private final TypeDef returnTypeDef = TypeDefConvertUtils.toTypeDef(Long.class);
 
     @Override
     public DynamicNode process(DynamicNode node) {
-        Long num1 = node.getChild("num1").getValue(Long.class);
-        Long num2 = node.getChild("num2").getValue(Long.class);
-        Long result = num1 + num2;
+        BigInteger num1 = node.getChild("num1").getValue(BigInteger.class);
+        BigInteger num2 = node.getChild("num2").getValue(BigInteger.class);
+        BigInteger result = num1.subtract(num2);
         return new DynamicValueNode(result);
     }
 

@@ -1,12 +1,21 @@
 package tech.gamesupport.lowcode.node;
 
 import tech.gamesupport.lowcode.typedef.TypeDef;
+import tech.gamesupport.lowcode.typedef.ValueDef;
+import tech.gamesupport.lowcode.typedef.ValueDefUtils;
+import tech.gamesupport.lowcode.typedef.ValueType;
 
 public class DynamicValueNode implements DynamicNode {
 
     private final Object value;
+    private final TypeDef typeDef;
 
     public DynamicValueNode(Object value) {
+        ValueType valueType = ValueDefUtils.findByValue(value);
+        if (valueType == null) {
+            throw new IllegalArgumentException("value is not supported, class: " + value.getClass());
+        }
+        typeDef = new ValueDef(valueType, value == null);
         this.value = value;
     }
 
@@ -40,7 +49,7 @@ public class DynamicValueNode implements DynamicNode {
 
     @Override
     public TypeDef analyzeTypeDef() {
-        return null;
+        return typeDef;
     }
 
     @Override
