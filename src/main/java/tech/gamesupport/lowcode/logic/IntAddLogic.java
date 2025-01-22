@@ -17,6 +17,7 @@ public class IntAddLogic implements ILogic {
         BigInteger num1 = node.getChild("num1").getValue(BigInteger.class);
         BigInteger num2 = node.getChild("num2").getValue(BigInteger.class);
         BigInteger result = num1.add(num2);
+        System.out.println(num1 + "+" + num2 + "=" + result);
         return new DynamicValueNode(result);
     }
 

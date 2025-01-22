@@ -14,19 +14,21 @@ public class Main {
 
     public static void main(String[] args) {
         IntAddLogic addLogic = new IntAddLogic();
+        LogicManager.registerLogic("add", addLogic);
+
         List<PathGetter> pathGetters = new ArrayList<>();
         PathGetter getterA = new PathGetter(NodePath.fromTraces("a"), NodePath.fromTraces("num1"));
         PathGetter getterB = new PathGetter(NodePath.fromTraces("b"), NodePath.fromTraces("num2"));
         pathGetters.add(getterA);
         pathGetters.add(getterB);
-        LogicInstance firstAddInstance = new LogicInstance("first-add",  addLogic, pathGetters);
+        LogicInstance firstAddInstance = new LogicInstance("first-add",  "add", pathGetters);
 
         pathGetters = new ArrayList<>();
         PathGetter getterC = new PathGetter(NodePath.fromTraces("c"), NodePath.fromTraces("num1"));
         PathGetter getterPrev = new PathGetter("first-add", NodePath.self(), NodePath.fromTraces("num2"));
         pathGetters.add(getterC);
         pathGetters.add(getterPrev);
-        LogicInstance secondAddInstance = new LogicInstance("second-add", addLogic, pathGetters);
+        LogicInstance secondAddInstance = new LogicInstance("second-add", "add", pathGetters);
 
         ValueDef valueDef = new ValueDef(ValueType.INT, false);
 
@@ -40,16 +42,44 @@ public class Main {
 
         ObjectDef objectDef = new ObjectDef(Arrays.asList(field1, field2, field3));
         CustomLogic myAddLogic = new CustomLogic(Arrays.asList("first-add", "second-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), "second-add");
+
+
+        LogicManager.registerLogic("three-add", myAddLogic);
+
+
         DynamicNodeBuilder builder = new DynamicNodeBuilder();
         builder.putNode(NodePath.fromTraces("a"), new DynamicValueNode(new BigInteger("100")));
         builder.putNode(NodePath.fromTraces("b"), new DynamicValueNode(new BigInteger("200")));
         builder.putNode(NodePath.fromTraces("c"), new DynamicValueNode(new BigInteger("300")));
-        DynamicNode input = builder.build();
-        DynamicNode output = myAddLogic.process(input);
+        builder.putNode(NodePath.fromTraces("d"), new DynamicValueNode(new BigInteger("400")));
+        builder.putNode(NodePath.fromTraces("e"), new DynamicValueNode(new BigInteger("500")));
+        builder.putNode(NodePath.fromTraces("f"), new DynamicValueNode(new BigInteger("600")));
 
-        System.out.println("process = " + output);
-        BigInteger value = output.getValue(BigInteger.class);
-        System.out.println("value = " + value);
+        pathGetters = new ArrayList<>();
+        pathGetters.add(new PathGetter(NodePath.self(), NodePath.self()));
+        LogicInstance leftAdd = new LogicInstance("left-add",  "three-add", pathGetters);
+
+
+        pathGetters = new ArrayList<>();
+        pathGetters.add(new PathGetter(NodePath.fromTraces("d"), NodePath.fromTraces("a")));
+        pathGetters.add(new PathGetter(NodePath.fromTraces("e"), NodePath.fromTraces("b")));
+        pathGetters.add(new PathGetter(NodePath.fromTraces("f"), NodePath.fromTraces("c")));
+        LogicInstance rightAdd = new LogicInstance("right-add",  "three-add", pathGetters);
+
+
+        pathGetters = new ArrayList<>();
+        pathGetters.add(new PathGetter("right-add", NodePath.self(), NodePath.fromTraces("num1")));
+        pathGetters.add(new PathGetter("left-add", NodePath.self(), NodePath.fromTraces("num2")));
+        LogicInstance finalAdd = new LogicInstance("final-add",  "add", pathGetters);
+
+        LogicInstanceManager.put(leftAdd);
+        LogicInstanceManager.put(rightAdd);
+        LogicInstanceManager.put(finalAdd);
+
+        CustomLogic myAddLogic2 = new CustomLogic(Arrays.asList("left-add", "right-add", "final-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), "final-add");
+
+
+        System.out.println("process = " + myAddLogic2.process(builder.build()).getValue(BigInteger.class));
     }
 
 

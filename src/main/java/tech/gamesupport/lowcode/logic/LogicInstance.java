@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 public class LogicInstance {
 
     private final List<PathGetter> pathGetters;
-    private final ILogic logic;
     private final String instanceId;
+    private final String logicId;
 
-    public LogicInstance(String instanceId, ILogic logic, List<PathGetter> pathGetters) {
-        this.pathGetters = pathGetters;
-        this.logic = logic;
+    public LogicInstance(String instanceId, String logicId, List<PathGetter> pathGetters) {
         this.instanceId = instanceId;
+        this.logicId = logicId;
+        this.pathGetters = pathGetters;
     }
 
     public void processStep(CustomLogicContext context) {
@@ -35,12 +35,8 @@ public class LogicInstance {
             builder.putNode(targetPath, dynamicNode);
         }
         DynamicNode build = builder.build();
-        DynamicNode process = logic.process(build);
+        DynamicNode process = LogicManager.getLogic(logicId).process(build);
         context.putResultNode(instanceId, process);
-    }
-
-    public DynamicNode process(DynamicNode node) {
-        return logic.process(node);
     }
 
     public String getInstanceId() {

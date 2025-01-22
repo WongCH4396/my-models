@@ -24,7 +24,6 @@ public class CustomLogic implements ILogic {
 
     @Override
     public DynamicNode process(DynamicNode node) {
-//        LogicContextManager logicContextManager = LogicContextManager.currentManager();
 
         CustomLogicContext context = new CustomLogicContext(node);
         List<LogicInstance> uncompletedInstances = logicInstanceIds.stream().map(LogicInstanceManager::get).collect(Collectors.toList());
@@ -38,8 +37,8 @@ public class CustomLogic implements ILogic {
             if (logicInstance == null) {
                 throw new IllegalStateException("Logic cannot be completed");
             }
+            System.out.println("logicInstance = " + logicInstance.getInstanceId());
             logicInstance.processStep(context);
-
             completedInstanceIds.add(logicInstance.getInstanceId());
             uncompletedInstances.remove(logicInstance);
         }

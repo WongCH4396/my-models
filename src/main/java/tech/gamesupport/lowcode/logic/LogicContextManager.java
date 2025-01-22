@@ -13,7 +13,7 @@ public class LogicContextManager {
     }
 
     private List<Object> list() {
-        return new ArrayList<Object>();
+        return new ArrayList<>();
     }
 
 
