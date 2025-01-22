@@ -21,12 +21,15 @@ public class LogicInstance {
         this.pathGetters = pathGetters;
     }
 
-    public void processStep(CustomLogicContext context) {
+    public void processStep(ILogicContext context) {
+        LogicLog logicLog = new LogicLog();
+        logicLog.setInstanceId(instanceId);
+        context.setActiveLog(logicLog);
         DynamicNodeBuilder builder = new DynamicNodeBuilder();
         for (PathGetter pathGetter : pathGetters) {
             DynamicNode current;
             if (pathGetter.isInputArg()) {
-                current = context.getInputNode();
+                current = context.inputNode();
             } else {
                 current = context.getResultNode(pathGetter.getInstanceId());
             }
@@ -34,9 +37,10 @@ public class LogicInstance {
             NodePath targetPath = pathGetter.getTargetPath();
             builder.putNode(targetPath, dynamicNode);
         }
-        DynamicNode build = builder.build();
-        DynamicNode process = LogicManager.getLogic(logicId).process(build);
-        context.putResultNode(instanceId, process);
+        context.setLogicNode(builder.build());
+        DynamicNode process = LogicManager.getLogic(logicId).process(context);
+        context.setResultNode(instanceId, process);
+        context.endActiveLog();
     }
 
     public String getInstanceId() {

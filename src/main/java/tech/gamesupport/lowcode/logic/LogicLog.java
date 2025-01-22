@@ -1,36 +1,31 @@
 package tech.gamesupport.lowcode.logic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LogicLog {
 
-    private String input;
-    private String output;
-    private String message;
+    private String instanceId;
+    private final List<Object> subs = new ArrayList<>();
 
-    private String logicInstanceId;
-
-    public String getInput() {
-        return input;
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
-    public void setInput(String input) {
-        this.input = input;
+    public void addSubLogicLog(LogicLog subLog) {
+        subs.add(subLog);
     }
 
-    public String getOutput() {
-        return output;
+    public void addMessage(Object message) {
+        subs.add(message);
     }
 
-    public void setOutput(String output) {
-        this.output = output;
+    public String getInstanceId() {
+        return instanceId;
     }
 
-    public String getMessage() {
-        return message;
+    public List<Object> getSubs() {
+        return subs;
     }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
 }
 

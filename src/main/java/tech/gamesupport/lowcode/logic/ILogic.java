@@ -5,7 +5,7 @@ import tech.gamesupport.lowcode.typedef.TypeDef;
 
 public interface ILogic {
 
-    DynamicNode process(DynamicNode node);
+    DynamicNode process(ILogicContext context);
 
     TypeDef getParameterTypeDef();
 

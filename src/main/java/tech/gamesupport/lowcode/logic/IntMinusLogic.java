@@ -13,9 +13,9 @@ public class IntMinusLogic implements ILogic {
     private final TypeDef returnTypeDef = TypeDefConvertUtils.toTypeDef(Long.class);
 
     @Override
-    public DynamicNode process(DynamicNode node) {
-        BigInteger num1 = node.getChild("num1").getValue(BigInteger.class);
-        BigInteger num2 = node.getChild("num2").getValue(BigInteger.class);
+    public DynamicNode process(ILogicContext context) {
+        BigInteger num1 = context.getLogicNode().getChild("num1").getValue(BigInteger.class);
+        BigInteger num2 = context.getLogicNode().getChild("num2").getValue(BigInteger.class);
         BigInteger result = num1.subtract(num2);
         return new DynamicValueNode(result);
     }

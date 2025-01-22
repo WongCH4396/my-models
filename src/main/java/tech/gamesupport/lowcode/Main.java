@@ -78,8 +78,12 @@ public class Main {
 
         CustomLogic myAddLogic2 = new CustomLogic(Arrays.asList("left-add", "right-add", "final-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), "final-add");
 
-
-        System.out.println("process = " + myAddLogic2.process(builder.build()).getValue(BigInteger.class));
+        CustomLogicContext context = new CustomLogicContext(builder.build());
+        LogicLog logicLog = new LogicLog();
+        logicLog.setInstanceId("123123");
+        context.setActiveLog(logicLog);
+        System.out.println("process = " + myAddLogic2.process(context).getValue(BigInteger.class));
+        System.out.println("logicLog = " + logicLog);
     }
 
 

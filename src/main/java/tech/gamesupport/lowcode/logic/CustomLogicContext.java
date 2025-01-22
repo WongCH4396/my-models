@@ -2,38 +2,73 @@ package tech.gamesupport.lowcode.logic;
 
 import tech.gamesupport.lowcode.node.DynamicNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class CustomLogicContext {
+public class CustomLogicContext implements ILogicContext {
 
-    private final DynamicNode inputNode;
     private final Map<String, DynamicNode> resultNodeMap = new HashMap<>();
-    private final List<LogicLog> logs = new ArrayList<>();
 
-    public CustomLogicContext(DynamicNode inputNode) {
-        this.inputNode = inputNode;
+    private LogicLog logicLog = null;
+    private Stack<LogicLog> logicLogs = new Stack<>();
+
+    private final DynamicNode node;
+    private DynamicNode logicNode;
+
+    public CustomLogicContext(DynamicNode node) {
+        this.node = node;
     }
 
-    public void writeLog(LogicLog log) {
-        logs.add(log);
+    @Override
+    public DynamicNode inputNode() {
+        return node;
     }
 
-    public List<LogicLog> getLogs() {
-        return logs;
+    public DynamicNode getResultNode(String instanceId) {
+        return resultNodeMap.get(instanceId);
     }
 
-    public DynamicNode getResultNode(String logicInstanceId) {
-        return resultNodeMap.get(logicInstanceId);
+    @Override
+    public void setLogicNode(DynamicNode node) {
+        this.logicNode = node;
     }
 
-    public DynamicNode getInputNode() {
-        return inputNode;
+    @Override
+    public DynamicNode getLogicNode() {
+        return logicNode;
     }
 
-    public void putResultNode(String instanceId, DynamicNode process) {
-        resultNodeMap.put(instanceId, process);
+    public void setResultNode(String instanceId, DynamicNode resultNode) {
+        resultNodeMap.put(instanceId, resultNode);
+    }
+
+    @Override
+    public LogicLog getLogicLog() {
+        return logicLog;
+    }
+
+    @Override
+    public void setActiveLog(LogicLog log) {
+        if (logicLog == null) {
+            logicLog = log;
+        } else {
+            logicLog.addSubLogicLog(log);
+            logicLogs.push(logicLog);
+            logicLog = log;
+        }
+    }
+
+    @Override
+    public void endActiveLog() {
+        if (logicLogs.isEmpty()) {
+            logicLog = null;
+        }
+        logicLog = logicLogs.pop();
+    }
+
+    @Override
+    public void writeLog(Object message) {
+        if (logicLog != null) {
+            logicLog.addMessage(message);
+        }
     }
 }

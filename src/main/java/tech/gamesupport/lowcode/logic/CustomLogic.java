@@ -23,9 +23,11 @@ public class CustomLogic implements ILogic {
     }
 
     @Override
-    public DynamicNode process(DynamicNode node) {
+    public DynamicNode process(ILogicContext parentContext) {
 
-        CustomLogicContext context = new CustomLogicContext(node);
+        LogicLog parentLogicLog = parentContext.getLogicLog();
+        CustomLogicContext context = new CustomLogicContext(parentContext.inputNode());
+        context.setActiveLog(parentLogicLog);
         List<LogicInstance> uncompletedInstances = logicInstanceIds.stream().map(LogicInstanceManager::get).collect(Collectors.toList());
         Set<String> completedInstanceIds = new HashSet<>();
 
@@ -37,15 +39,10 @@ public class CustomLogic implements ILogic {
             if (logicInstance == null) {
                 throw new IllegalStateException("Logic cannot be completed");
             }
-            System.out.println("logicInstance = " + logicInstance.getInstanceId());
             logicInstance.processStep(context);
             completedInstanceIds.add(logicInstance.getInstanceId());
             uncompletedInstances.remove(logicInstance);
         }
-
-
-        LogicLog logicLog = new LogicLog();
-        context.writeLog(logicLog);
         return context.getResultNode(finalInstanceId);
     }
 

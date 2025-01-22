@@ -13,11 +13,12 @@ public class IntAddLogic implements ILogic {
     private final TypeDef returnTypeDef = TypeDefConvertUtils.toTypeDef(Long.class);
 
     @Override
-    public DynamicNode process(DynamicNode node) {
-        BigInteger num1 = node.getChild("num1").getValue(BigInteger.class);
-        BigInteger num2 = node.getChild("num2").getValue(BigInteger.class);
+    public DynamicNode process(ILogicContext context) {
+        BigInteger num1 = context.getLogicNode().getChild("num1").getValue(BigInteger.class);
+        BigInteger num2 = context.getLogicNode().getChild("num2").getValue(BigInteger.class);
         BigInteger result = num1.add(num2);
-        System.out.println(num1 + "+" + num2 + "=" + result);
+        context.writeLog(num1 + " + " + num2 + "=" + result);
+        System.out.println(num1 + " + " + num2 + "=" + result);
         return new DynamicValueNode(result);
     }
 
