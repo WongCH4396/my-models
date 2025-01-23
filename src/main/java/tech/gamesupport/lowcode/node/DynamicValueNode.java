@@ -19,6 +19,11 @@ public class DynamicValueNode implements DynamicNode {
         this.value = value;
     }
 
+    public static DynamicValueNode create(Object value) {
+        return new DynamicValueNode(value);
+    }
+
+
     @Override
     public DynamicNode getChildAt(int index) {
         throw new UnsupportedOperationException("Value node cannot be accessed as an array");
@@ -55,5 +60,10 @@ public class DynamicValueNode implements DynamicNode {
     @Override
     public boolean isContainer() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "ValueNode(value = " + value + ")";
     }
 }

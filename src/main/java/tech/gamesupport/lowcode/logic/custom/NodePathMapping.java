@@ -1,30 +1,23 @@
-package tech.gamesupport.lowcode.logic;
+package tech.gamesupport.lowcode.logic.custom;
 
 import tech.gamesupport.lowcode.node.NodePath;
 
-public class PathGetter {
+public class NodePathMapping {
 
-    private final boolean isInputArg;
     private final String instanceId;
     private final NodePath sourcePath;
     private final NodePath targetPath;
 
-    public PathGetter(String instanceId, NodePath sourcePath, NodePath targetPath) {
+    public NodePathMapping(String instanceId, NodePath sourcePath, NodePath targetPath) {
         this.instanceId = instanceId;
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
-        isInputArg = false;
     }
 
-    public PathGetter(NodePath sourcePath, NodePath targetPath) {
+    public NodePathMapping(NodePath sourcePath, NodePath targetPath) {
         this.instanceId = null;
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
-        isInputArg = true;
-    }
-
-    public boolean isInputArg() {
-        return isInputArg;
     }
 
     public String getInstanceId() {
@@ -38,4 +31,5 @@ public class PathGetter {
     public NodePath getTargetPath() {
         return targetPath;
     }
+
 }

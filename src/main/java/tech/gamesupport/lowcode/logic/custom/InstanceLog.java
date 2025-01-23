@@ -1,9 +1,9 @@
-package tech.gamesupport.lowcode.logic;
+package tech.gamesupport.lowcode.logic.custom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogicLog {
+public class InstanceLog {
 
     private String instanceId;
     private final List<Object> subs = new ArrayList<>();
@@ -12,20 +12,24 @@ public class LogicLog {
         this.instanceId = instanceId;
     }
 
-    public void addSubLogicLog(LogicLog subLog) {
-        subs.add(subLog);
-    }
-
-    public void addMessage(Object message) {
-        subs.add(message);
-    }
-
     public String getInstanceId() {
         return instanceId;
     }
 
     public List<Object> getSubs() {
         return subs;
+    }
+
+    public void addAllMessages(List<Object> messages) {
+        subs.addAll(messages);
+    }
+
+    @Override
+    public String toString() {
+        return "InstanceLog(" +
+                "instanceId='" + instanceId + '\'' +
+                ", subs=" + subs +
+                ')';
     }
 }
 

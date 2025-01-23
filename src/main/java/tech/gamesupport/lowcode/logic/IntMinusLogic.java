@@ -1,6 +1,5 @@
 package tech.gamesupport.lowcode.logic;
 
-import tech.gamesupport.lowcode.node.DynamicNode;
 import tech.gamesupport.lowcode.node.DynamicValueNode;
 import tech.gamesupport.lowcode.typedef.TypeDef;
 import tech.gamesupport.lowcode.typedef.TypeDefConvertUtils;
@@ -13,11 +12,12 @@ public class IntMinusLogic implements ILogic {
     private final TypeDef returnTypeDef = TypeDefConvertUtils.toTypeDef(Long.class);
 
     @Override
-    public DynamicNode process(ILogicContext context) {
-        BigInteger num1 = context.getLogicNode().getChild("num1").getValue(BigInteger.class);
-        BigInteger num2 = context.getLogicNode().getChild("num2").getValue(BigInteger.class);
+    public void process(LogicContext context) {
+        BigInteger num1 = context.getInputNode().getChild("num1").getValue(BigInteger.class);
+        BigInteger num2 = context.getInputNode().getChild("num2").getValue(BigInteger.class);
         BigInteger result = num1.subtract(num2);
-        return new DynamicValueNode(result);
+        context.writeLog(num1 + " - " + num2 + " = " + result);
+        context.setOutputNode(DynamicValueNode.create(result));
     }
 
     @Override

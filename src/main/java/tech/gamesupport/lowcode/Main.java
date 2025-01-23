@@ -1,13 +1,14 @@
 package tech.gamesupport.lowcode;
 
 import tech.gamesupport.lowcode.logic.*;
-import tech.gamesupport.lowcode.logic.PathGetter;
+import tech.gamesupport.lowcode.logic.custom.*;
 import tech.gamesupport.lowcode.node.*;
 import tech.gamesupport.lowcode.typedef.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -16,19 +17,19 @@ public class Main {
         IntAddLogic addLogic = new IntAddLogic();
         LogicManager.registerLogic("add", addLogic);
 
-        List<PathGetter> pathGetters = new ArrayList<>();
-        PathGetter getterA = new PathGetter(NodePath.fromTraces("a"), NodePath.fromTraces("num1"));
-        PathGetter getterB = new PathGetter(NodePath.fromTraces("b"), NodePath.fromTraces("num2"));
-        pathGetters.add(getterA);
-        pathGetters.add(getterB);
-        LogicInstance firstAddInstance = new LogicInstance("first-add",  "add", pathGetters);
+        List<NodePathMapping> nodePathMappings = new ArrayList<>();
+        NodePathMapping getterA = new NodePathMapping(NodePath.fromTraces("a"), NodePath.fromTraces("num1"));
+        NodePathMapping getterB = new NodePathMapping(NodePath.fromTraces("b"), NodePath.fromTraces("num2"));
+        nodePathMappings.add(getterA);
+        nodePathMappings.add(getterB);
+        LogicInstance firstAddInstance = new LogicInstance("first-add",  "add", new NodeMapping(nodePathMappings));
 
-        pathGetters = new ArrayList<>();
-        PathGetter getterC = new PathGetter(NodePath.fromTraces("c"), NodePath.fromTraces("num1"));
-        PathGetter getterPrev = new PathGetter("first-add", NodePath.self(), NodePath.fromTraces("num2"));
-        pathGetters.add(getterC);
-        pathGetters.add(getterPrev);
-        LogicInstance secondAddInstance = new LogicInstance("second-add", "add", pathGetters);
+        nodePathMappings = new ArrayList<>();
+        NodePathMapping getterC = new NodePathMapping(NodePath.fromTraces("c"), NodePath.fromTraces("num1"));
+        NodePathMapping getterPrev = new NodePathMapping("first-add", NodePath.self(), NodePath.fromTraces("num2"));
+        nodePathMappings.add(getterC);
+        nodePathMappings.add(getterPrev);
+        LogicInstance secondAddInstance = new LogicInstance("second-add", "add", new NodeMapping(nodePathMappings));
 
         ValueDef valueDef = new ValueDef(ValueType.INT, false);
 
@@ -40,9 +41,10 @@ public class Main {
         LogicInstanceManager.put(secondAddInstance);
 
 
-        ObjectDef objectDef = new ObjectDef(Arrays.asList(field1, field2, field3));
-        CustomLogic myAddLogic = new CustomLogic(Arrays.asList("first-add", "second-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), "second-add");
+        NodeMapping nodeMapping = new NodeMapping(Collections.singletonList(new NodePathMapping("second-add", NodePath.self(), NodePath.self())));
 
+        ObjectDef objectDef = new ObjectDef(Arrays.asList(field1, field2, field3));
+        CustomLogic myAddLogic = new CustomLogic(Arrays.asList("first-add", "second-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), nodeMapping);
 
         LogicManager.registerLogic("three-add", myAddLogic);
 
@@ -55,35 +57,36 @@ public class Main {
         builder.putNode(NodePath.fromTraces("e"), new DynamicValueNode(new BigInteger("500")));
         builder.putNode(NodePath.fromTraces("f"), new DynamicValueNode(new BigInteger("600")));
 
-        pathGetters = new ArrayList<>();
-        pathGetters.add(new PathGetter(NodePath.self(), NodePath.self()));
-        LogicInstance leftAdd = new LogicInstance("left-add",  "three-add", pathGetters);
+        nodePathMappings = new ArrayList<>();
+        nodePathMappings.add(new NodePathMapping(NodePath.self(), NodePath.self()));
+        LogicInstance leftAdd = new LogicInstance("left-add",  "three-add", new NodeMapping(nodePathMappings));
 
 
-        pathGetters = new ArrayList<>();
-        pathGetters.add(new PathGetter(NodePath.fromTraces("d"), NodePath.fromTraces("a")));
-        pathGetters.add(new PathGetter(NodePath.fromTraces("e"), NodePath.fromTraces("b")));
-        pathGetters.add(new PathGetter(NodePath.fromTraces("f"), NodePath.fromTraces("c")));
-        LogicInstance rightAdd = new LogicInstance("right-add",  "three-add", pathGetters);
+        nodePathMappings = new ArrayList<>();
+        nodePathMappings.add(new NodePathMapping(NodePath.fromTraces("d"), NodePath.fromTraces("a")));
+        nodePathMappings.add(new NodePathMapping(NodePath.fromTraces("e"), NodePath.fromTraces("b")));
+        nodePathMappings.add(new NodePathMapping(NodePath.fromTraces("f"), NodePath.fromTraces("c")));
+        LogicInstance rightAdd = new LogicInstance("right-add",  "three-add", new NodeMapping(nodePathMappings));
 
 
-        pathGetters = new ArrayList<>();
-        pathGetters.add(new PathGetter("right-add", NodePath.self(), NodePath.fromTraces("num1")));
-        pathGetters.add(new PathGetter("left-add", NodePath.self(), NodePath.fromTraces("num2")));
-        LogicInstance finalAdd = new LogicInstance("final-add",  "add", pathGetters);
+        nodePathMappings = new ArrayList<>();
+        nodePathMappings.add(new NodePathMapping("right-add", NodePath.self(), NodePath.fromTraces("num1")));
+        nodePathMappings.add(new NodePathMapping("left-add", NodePath.self(), NodePath.fromTraces("num2")));
+        LogicInstance finalAdd = new LogicInstance("final-add",  "add", new NodeMapping(nodePathMappings));
 
         LogicInstanceManager.put(leftAdd);
         LogicInstanceManager.put(rightAdd);
         LogicInstanceManager.put(finalAdd);
 
-        CustomLogic myAddLogic2 = new CustomLogic(Arrays.asList("left-add", "right-add", "final-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), "final-add");
+        nodeMapping = new NodeMapping(Collections.singletonList(new NodePathMapping("final-add", NodePath.self(), NodePath.self())));
+        CustomLogic myAddLogic2 = new CustomLogic(Arrays.asList("left-add", "right-add", "final-add"), objectDef, TypeDefConvertUtils.toTypeDef(BigInteger.class), nodeMapping);
 
-        CustomLogicContext context = new CustomLogicContext(builder.build());
-        LogicLog logicLog = new LogicLog();
-        logicLog.setInstanceId("123123");
-        context.setActiveLog(logicLog);
-        System.out.println("process = " + myAddLogic2.process(context).getValue(BigInteger.class));
-        System.out.println("logicLog = " + logicLog);
+        InstanceLog instanceLog = new InstanceLog();
+        instanceLog.setInstanceId("123123");
+        LogicContext context = new LogicContext(builder.build());
+        myAddLogic2.process(context);
+        System.out.println("process = " + context.getOutputNode());
+        System.out.println("logicLog = " + context.getLogs());
     }
 
 

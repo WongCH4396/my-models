@@ -1,4 +1,4 @@
-package tech.gamesupport.lowcode.logic;
+package tech.gamesupport.lowcode.logic.custom;
 
 import java.util.HashMap;
 import java.util.Map;

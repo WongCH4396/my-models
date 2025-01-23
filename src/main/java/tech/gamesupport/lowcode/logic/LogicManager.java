@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class LogicManager {
 
-    private static final Map<String, ILogic> logicMap = new HashMap<String, ILogic>();
+    private static final Map<String, ILogic> logicMap = new HashMap<>();
 
     public static void registerLogic(String logicId, ILogic logic) {
         logicMap.put(logicId, logic);
